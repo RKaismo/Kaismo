@@ -1,11 +1,10 @@
--- RoboAssistBot Script (Roblox)
-
 local roboAssistBotName = "RoboAssistBot"
 local maxResponseLength = 50
+local typingSpeed = 0.1  -- Speed of typing effect in seconds per character
 
--- Create a function for RoboAssistBot to respond
+-- Function for RoboAssistBot to respond (Simulate ChatGPT response)
 function getRoboAssistBotResponse(playerMessage)
-    -- List of predefined responses to simulate RoboAssistBot
+    -- Here, ChatGPT would generate the response. For now, use predefined responses.
     local responses = {
         "Hello! How can I assist you today?",
         "I can help with many things. Ask away!",
@@ -25,7 +24,7 @@ function getRoboAssistBotResponse(playerMessage)
     return responses[math.random(1, #responses)]
 end
 
--- Function to check for NSFW or inappropriate words
+-- Function to check for inappropriate messages
 function isInappropriateMessage(message)
     local inappropriateWords = {"swearword1", "swearword2"} -- Replace with actual words
     for _, word in ipairs(inappropriateWords) do
@@ -34,6 +33,22 @@ function isInappropriateMessage(message)
         end
     end
     return false
+end
+
+-- Function to simulate typing and send the message
+function sendMessageWithTypingEffect(player, response)
+    -- Simulate typing effect by sending each character one by one
+    local chatLabel = game:GetService("Chat"):Chat(player.Character, "", Enum.ChatColor.Blue)
+
+    -- Simulate typing by updating the text character by character
+    for i = 1, #response do
+        local partialResponse = string.sub(response, 1, i)
+        chatLabel.Text = partialResponse
+        wait(typingSpeed)  -- Simulate typing speed
+    end
+
+    -- After the typing effect, send the final message
+    game:GetService("Chat"):Chat(player.Character, response, Enum.ChatColor.Blue)
 end
 
 -- Event listener for player messages
@@ -46,13 +61,13 @@ game.Players.PlayerAdded:Connect(function(player)
 
         -- RoboAssistBot responds with the appropriate message
         local response = getRoboAssistBotResponse(message)
-        
+
         -- Ensure the response is under 50 characters
         if string.len(response) > maxResponseLength then
             response = string.sub(response, 1, maxResponseLength)
         end
 
-        -- Output RoboAssistBot's response in the chat
-        game:GetService("Chat"):Chat(player.Character, response, Enum.ChatColor.Blue)
+        -- Simulate typing the response with a typing effect
+        sendMessageWithTypingEffect(player, response)
     end)
 end)
