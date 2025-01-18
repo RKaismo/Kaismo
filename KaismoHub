@@ -1,0 +1,58 @@
+-- RoboAssistBot Script (Roblox)
+
+local roboAssistBotName = "RoboAssistBot"
+local maxResponseLength = 50
+
+-- Create a function for RoboAssistBot to respond
+function getRoboAssistBotResponse(playerMessage)
+    -- List of predefined responses to simulate RoboAssistBot
+    local responses = {
+        "Hello! How can I assist you today?",
+        "I can help with many things. Ask away!",
+        "This Info Isn't Allowed.",
+        "I'm here to help with anything you need!",
+        "Let's keep it friendly and fun.",
+        "How can I make your experience better?",
+        "Feel free to ask me anything!"
+    }
+
+    -- If the message contains "chatgpt", respond accordingly
+    if string.match(playerMessage:lower(), "chatgpt") then
+        return responses[3] -- "This Info Isn't Allowed."
+    end
+
+    -- Return a random response from the predefined list
+    return responses[math.random(1, #responses)]
+end
+
+-- Function to check for NSFW or inappropriate words
+function isInappropriateMessage(message)
+    local inappropriateWords = {"swearword1", "swearword2"} -- Replace with actual words
+    for _, word in ipairs(inappropriateWords) do
+        if string.match(message:lower(), word) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Event listener for player messages
+game.Players.PlayerAdded:Connect(function(player)
+    player.Chatted:Connect(function(message)
+        -- If the message is inappropriate, don't respond
+        if isInappropriateMessage(message) then
+            return
+        end
+
+        -- RoboAssistBot responds with the appropriate message
+        local response = getRoboAssistBotResponse(message)
+        
+        -- Ensure the response is under 50 characters
+        if string.len(response) > maxResponseLength then
+            response = string.sub(response, 1, maxResponseLength)
+        end
+
+        -- Output RoboAssistBot's response in the chat
+        game:GetService("Chat"):Chat(player.Character, response, Enum.ChatColor.Blue)
+    end)
+end)
